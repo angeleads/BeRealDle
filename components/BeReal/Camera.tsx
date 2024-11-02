@@ -1,18 +1,22 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Ionicons } from '@expo/vector-icons';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { addDoc, collection } from 'firebase/firestore';
-import { auth, db, storage } from '../../library/firebaseConfig';
+import React, { useState, useRef } from "react";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import { Ionicons } from "@expo/vector-icons";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import { auth, db, storage } from "../../library/firebaseConfig";
 
 interface CameraProps {
-  onCapture: (newPost: { userId: string | undefined; imageUrl: string; createdAt: Date }) => void;
+  onCapture: (newPost: {
+    userId: string | undefined;
+    imageUrl: string;
+    createdAt: Date;
+  }) => void;
   onClose: () => void;
 }
 
 export default function Camera({ onCapture, onClose }: CameraProps) {
-  const [facing, setFacing] = useState<CameraType>('back');
+  const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -24,7 +28,9 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Text style={styles.message}>
+          We need your permission to show the camera
+        </Text>
         <TouchableOpacity style={styles.button} onPress={requestPermission}>
           <Text style={styles.text}>Grant permission</Text>
         </TouchableOpacity>
@@ -33,7 +39,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   }
 
   function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
   const takePicture = async () => {
@@ -45,7 +51,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
 
   const uploadPhoto = async () => {
     if (!capturedImage || !auth.currentUser) {
-      console.error('No captured image or authenticated user found');
+      console.error("No captured image or authenticated user found");
       return;
     }
 
@@ -64,10 +70,10 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
         createdAt: new Date(),
       };
 
-      await addDoc(collection(db, 'posts'), newPost);
+      await addDoc(collection(db, "posts"), newPost);
       onCapture(newPost);
     } catch (error) {
-      console.error('Error uploading photo: ', error);
+      console.error("Error uploading photo: ", error);
     }
   };
 
@@ -77,7 +83,10 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
         <View style={styles.previewContainer}>
           <Image source={{ uri: capturedImage }} style={styles.preview} />
           <View style={styles.previewButtons}>
-            <TouchableOpacity style={styles.button} onPress={() => setCapturedImage(null)}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setCapturedImage(null)}
+            >
               <Text style={styles.text}>Retake</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={uploadPhoto}>
@@ -94,7 +103,10 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             <TouchableOpacity style={styles.button} onPress={takePicture}>
               <Ionicons name="radio-button-on" size={70} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={toggleCameraFacing}
+            >
               <Ionicons name="camera-reverse" size={30} color="white" />
             </TouchableOpacity>
           </View>
@@ -107,10 +119,10 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   message: {
-    textAlign: 'center',
+    textAlign: "center",
     paddingBottom: 10,
   },
   camera: {
@@ -118,35 +130,35 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
+    flexDirection: "row",
+    backgroundColor: "transparent",
     margin: 64,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   button: {
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
+    alignSelf: "flex-end",
+    alignItems: "center",
+    backgroundColor: "transparent",
   },
   text: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   previewContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
   preview: {
-    width: '100%',
-    height: '80%',
+    width: "100%",
+    height: "80%",
   },
   previewButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
     padding: 20,
   },
 });

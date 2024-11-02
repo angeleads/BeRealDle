@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { auth, db } from "../../library/firebaseConfig";
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUp() {
   const router = useRouter();
@@ -15,7 +22,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
   const [confirmPasswordHidden, setConfirmPasswordHidden] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const togglePasswordVisibility = () => {
     setPasswordHidden(!passwordHidden);
@@ -37,16 +44,20 @@ export default function SignUp() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
-      await setDoc(doc(db, 'users', user.uid), {
+      await setDoc(doc(db, "users", user.uid), {
         userId: user.uid,
         username: username,
         email: email,
       });
       console.log("User signed up successfully:", user.uid);
-      router.push('/(tabs)/wordle');
+      router.push("/(tabs)/wordle");
     } catch (error: any) {
       console.error("Error signing up:", error.message);
       setErrorMessage("Error signing up. Please try again.");
@@ -54,16 +65,23 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-violet-400">
-      <KeyboardAvoidingView 
+    <SafeAreaView className="flex-1 bg-black">
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1 justify-center px-6"
       >
         <View className="bg-gray-800 rounded-3xl p-8 shadow-lg">
-          <Text className="text-4xl font-bold text-indigo-400 mb-6 text-center">Sign Up</Text>
-          
+          <Text className="text-4xl font-bold text-indigo-400 text-center">
+            Welcome to
+          </Text>
+          <Text className="text-4xl font-bold text-indigo-400 mb-6 text-center">
+            BeRealDle
+          </Text>
+
           {errorMessage ? (
-            <Text className="text-red-500 text-sm mb-4 text-center">{errorMessage}</Text>
+            <Text className="text-red-500 text-sm mb-4 text-center">
+              {errorMessage}
+            </Text>
           ) : null}
 
           <View className="space-y-4">
@@ -72,7 +90,7 @@ export default function SignUp() {
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
-                className="px-4 py-3 text-white "
+                className="px-4 py-4 text-white "
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 autoCapitalize="none"
               />
@@ -83,26 +101,28 @@ export default function SignUp() {
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                className="px-4 py-3 text-white "
+                className="px-4 py-4 text-white "
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 autoCapitalize="none"
                 keyboardType="email-address"
               />
             </View>
-
             <View className="border border-gray-600 rounded-xl mb-3 flex-row items-center">
               <TextInput
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={passwordHidden}
-                className="flex-1 px-4 py-3 text-white "
+                className="flex-1 px-4 py-4 text-white "
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 autoCapitalize="none"
               />
-              <TouchableOpacity onPress={togglePasswordVisibility} className="pr-4">
+              <TouchableOpacity
+                onPress={togglePasswordVisibility}
+                className="pr-4"
+              >
                 <Ionicons
-                  name={passwordHidden ? 'eye-outline' : 'eye-off-outline'}
+                  name={passwordHidden ? "eye-outline" : "eye-off-outline"}
                   size={24}
                   color="gray"
                 />
@@ -115,13 +135,18 @@ export default function SignUp() {
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={confirmPasswordHidden}
-                className="flex-1 px-4 py-3 text-white"
+                className="flex-1 px-4 py-4 text-white"
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 autoCapitalize="none"
               />
-              <TouchableOpacity onPress={toggleConfirmPasswordVisibility} className="pr-4">
+              <TouchableOpacity
+                onPress={toggleConfirmPasswordVisibility}
+                className="pr-4"
+              >
                 <Ionicons
-                  name={confirmPasswordHidden ? 'eye-outline' : 'eye-off-outline'}
+                  name={
+                    confirmPasswordHidden ? "eye-outline" : "eye-off-outline"
+                  }
                   size={24}
                   color="gray"
                 />
@@ -133,13 +158,15 @@ export default function SignUp() {
             onPress={handleSignUp}
             className="bg-indigo-600 mt-6 py-3 rounded-2xl"
           >
-            <Text className="text-white font-bold text-center text-lg">Sign Up</Text>
+            <Text className="text-white font-bold text-center text-lg">
+              Sign Up
+            </Text>
           </TouchableOpacity>
 
           <View className="flex-row justify-center mt-6">
-            <Text className="text-gray-400">Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push('/login')}>
-              <Text className="text-indigo-400 font-bold">Log In</Text>
+            <Text className="text-gray-400 text-lg">Already have an account? </Text>
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text className="text-indigo-400 font-bold text-lg">Log In</Text>
             </TouchableOpacity>
           </View>
         </View>
