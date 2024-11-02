@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "102727303638",
+    "project_id": "berealdle",
+    "storage_bucket": "berealdle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102727303638:android:97876a193867dce826e477",
+        "android_client_info": {
+          "package_name": "com.angel.berealdle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Q-YtpgWX7xwfhTIPGGyRvynJ8py_E0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
