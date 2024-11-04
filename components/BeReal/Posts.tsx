@@ -15,7 +15,7 @@ interface PostsProps {
 }
 
 interface UserData {
-  username: string;
+  name: string;
   profilePicture: string;
 }
 
@@ -31,7 +31,7 @@ export default function Posts({ posts }: PostsProps) {
         const data = doc.data();
         if (data && data.username && data.profilePicture) {
           userDataMap[doc.id] = {
-            username: data.username,
+            name: data.username,
             profilePicture: data.profilePicture
           };
         }
@@ -43,11 +43,12 @@ export default function Posts({ posts }: PostsProps) {
   }, []);
 
   const formatDate = (createdAt: Post["createdAt"]) => {
+    if (!createdAt) return "Date unavailable";
     if (createdAt instanceof Timestamp) {
       return createdAt.toDate().toLocaleTimeString();
     } else if (createdAt instanceof Date) {
       return createdAt.toLocaleTimeString();
-    } else if (createdAt && "seconds" in createdAt) {
+    } else if ('seconds' in createdAt) {
       return new Date(createdAt.seconds * 1000).toLocaleTimeString();
     } else {
       return "Date unavailable";
@@ -55,35 +56,27 @@ export default function Posts({ posts }: PostsProps) {
   };
 
   return (
-    <View className="flex-1 p-4">
-      {posts.length > 0 ? (
-        <ScrollView className="flex-1">
-          {posts.map((post) => (
-            <View key={post.id} className="rounded-lg mb-4 shadow-md">
-              <View className="flex-row items-center p-4">
-                <Image
-                  source={{ uri: userData[post.userId]?.profilePicture || 'https://via.placeholder.com/40' }}
-                  className="w-10 h-10 rounded-full"
-                />
-                <Text className="text-white ml-3 text-lg font-semibold">
-                  {userData[post.userId]?.username || "Unknown User"}
-                </Text>
-                <Text className="text-white ml-auto">
-                  {formatDate(post.createdAt)}
-                </Text>
-              </View>
-              <Image
-                source={{ uri: post.imageUrl }}
-                className="w-full h-96 rounded-lg mb-5"
-              />
-            </View>
-          ))}
-        </ScrollView>
-      ) : (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-white text-lg">No BeReals for now</Text>
+    <ScrollView className="flex-1 p-4">
+      {posts.map((post, index) => (
+      <View key={`${post.id}-${index}`} className="rounded-lg mb-4 shadow-md">
+          <View className="flex-row items-center p-4">
+            <Image
+              source={{ uri: userData[post.userId]?.profilePicture || 'https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg' }}
+              className="w-10 h-10 rounded-full"
+            />
+            <Text className="text-white ml-3 text-lg font-semibold">
+              {userData[post.userId]?.name || "Unknown User"}
+            </Text>
+            <Text className="text-white ml-auto">
+              {formatDate(post.createdAt)}
+            </Text>
+          </View>
+          <Image
+            source={{ uri: post.imageUrl }}
+            className="w-full h-96 rounded-lg mb-5"
+          />
         </View>
-      )}
-    </View>
+      ))}
+    </ScrollView>
   );
 }
