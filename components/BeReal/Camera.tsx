@@ -1,5 +1,12 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -51,32 +58,32 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
 
   const uploadPhoto = async () => {
     if (!capturedImage || !auth.currentUser) {
-      console.error('No captured image or authenticated user found');
+      console.error("No captured image or authenticated user found");
       return;
     }
-  
+
     const response = await fetch(capturedImage);
     const blob = await response.blob();
     const filename = `${auth.currentUser.uid}-${Date.now()}.jpg`;
     const storageRef = ref(storage, `posts/${filename}`);
-  
+
     try {
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
-  
+
       const newPostRef = await addDoc(collection(db, "posts"), {
         userId: auth.currentUser.uid,
         imageUrl: downloadURL,
         createdAt: serverTimestamp(),
       });
-      
+
       const newPost = {
         id: newPostRef.id,
         userId: auth.currentUser.uid,
         imageUrl: downloadURL,
         createdAt: new Date(),
       };
-  
+
       onCapture(newPost);
     } catch (error) {
       console.error("Error uploading photo: ", error);
@@ -96,8 +103,8 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
               <Ionicons name="refresh-outline" size={24} color="white" />
               <Text style={styles.buttonText}>Retake</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.button, styles.publishButton]} 
+            <TouchableOpacity
+              style={[styles.button, styles.publishButton]}
               onPress={uploadPhoto}
             >
               <Ionicons name="send-outline" size={24} color="white" />
@@ -111,10 +118,16 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             <TouchableOpacity style={styles.iconButton} onPress={onClose}>
               <Ionicons name="close" size={30} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
+            <TouchableOpacity
+              style={styles.captureButton}
+              onPress={takePicture}
+            >
               <View style={styles.captureButtonInner} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} onPress={toggleCameraFacing}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={toggleCameraFacing}
+            >
               <Ionicons name="camera-reverse" size={30} color="white" />
             </TouchableOpacity>
           </View>
@@ -124,23 +137,23 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   );
 }
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const aspectRatio = 3 / 4;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: "black",
   },
   message: {
     textAlign: "center",
     paddingBottom: 10,
-    color: 'white',
+    color: "white",
   },
   camera: {
     width: screenWidth,
     height: screenWidth / aspectRatio,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   buttonContainer: {
     flex: 1,
@@ -148,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     margin: 20,
     justifyContent: "space-between",
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   iconButton: {
     padding: 15,
@@ -157,15 +170,15 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   captureButtonInner: {
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   buttonText: {
     fontSize: 16,
@@ -181,27 +194,27 @@ const styles = StyleSheet.create({
   preview: {
     width: screenWidth,
     height: screenWidth / aspectRatio,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   previewButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
     padding: 20,
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
   },
   retakeButton: {
-    backgroundColor: '#555',
+    backgroundColor: "#555",
   },
   publishButton: {
-    backgroundColor: '#353638',
+    backgroundColor: "#353638",
   },
 });

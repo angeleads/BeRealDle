@@ -25,7 +25,8 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="wordle"
         options={{
-          title: "BeRealDle",
+          title: "Wordle",
+          headerTitle: "BeRealDle",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="puzzle-piece" color={color} size={30} />
           ),
@@ -38,16 +39,16 @@ const TabsLayout = () => {
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 30,
-          }
+          },
         }}
-        
       />
       <Tabs.Screen
-        name="bereal"
+        name="search"
         options={{
-          title: "BeRealDle",
+          title: "search",
+          headerTitle: "BeRealDle",
           tabBarIcon: ({ color }) => (
-            <Entypo name="camera" color={color} size={30} />
+            <FontAwesome name="search" color={color} size={30} />
           ),
           headerStyle: {
             backgroundColor: "#000000",
@@ -58,7 +59,28 @@ const TabsLayout = () => {
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 30,
-          }
+          },
+        }}
+        />
+      <Tabs.Screen
+        name="bereal"
+        options={{
+          title: "BeReal",
+          headerTitle: "BeRealDle",
+          tabBarIcon: ({ color }) => (
+            <Entypo name="camera" color={color} size={30} />
+          ),
+          headerStyle: {
+            backgroundColor: "#000000",
+            height: 120,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 30,
+          },
         }}
       />
       <Tabs.Screen

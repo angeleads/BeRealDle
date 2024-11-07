@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import { Timestamp, collection, getDocs } from "firebase/firestore";
-import { db } from "../../library/firebaseConfig";
+import { Timestamp, collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../../library/firebaseConfig";
 
 interface Post {
   id: string;
@@ -24,23 +24,25 @@ export default function Posts({ posts }: PostsProps) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const usersCollection = collection(db, "users");
-      const usersSnapshot = await getDocs(usersCollection);
+      const userIds = [...new Set(posts.map(post => post.userId))];
       const userDataMap: { [key: string]: UserData } = {};
-      usersSnapshot.forEach((doc) => {
-        const data = doc.data();
+
+      for (const userId of userIds) {
+        const userDoc = await getDoc(doc(db, "users", userId));
+        const data = userDoc.data();
         if (data && data.username && data.profilePicture) {
-          userDataMap[doc.id] = {
+          userDataMap[userId] = {
             name: data.username,
-            profilePicture: data.profilePicture
+            profilePicture: data.profilePicture,
           };
         }
-      });
+      }
+
       setUserData(userDataMap);
     };
 
     fetchUserData();
-  }, []);
+  }, [posts]);
 
   const formatDate = (createdAt: Post["createdAt"]) => {
     if (!createdAt) return "Date unavailable";
@@ -48,7 +50,7 @@ export default function Posts({ posts }: PostsProps) {
       return createdAt.toDate().toLocaleTimeString();
     } else if (createdAt instanceof Date) {
       return createdAt.toLocaleTimeString();
-    } else if ('seconds' in createdAt) {
+    } else if ("seconds" in createdAt) {
       return new Date(createdAt.seconds * 1000).toLocaleTimeString();
     } else {
       return "Date unavailable";
@@ -58,10 +60,14 @@ export default function Posts({ posts }: PostsProps) {
   return (
     <ScrollView className="flex-1 p-4">
       {posts.map((post, index) => (
-      <View key={`${post.id}-${index}`} className="rounded-lg mb-4 shadow-md">
+        <View key={`${post.id}-${index}`} className="rounded-xl mb-4 shadow-md">
           <View className="flex-row items-center p-4">
             <Image
-              source={{ uri: userData[post.userId]?.profilePicture || 'https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg' }}
+              source={{
+                uri:
+                  userData[post.userId]?.profilePicture ||
+                  "https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg",
+              }}
               className="w-10 h-10 rounded-full"
             />
             <Text className="text-white ml-3 text-lg font-semibold">

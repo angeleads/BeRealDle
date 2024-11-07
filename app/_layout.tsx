@@ -24,7 +24,7 @@ const RootLayout = () => {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: "fade",
+        animation: "ios",
       }}
     >
       {currentUser ? (
@@ -33,7 +33,7 @@ const RootLayout = () => {
           options={{
             headerShown: false,
             title: "Back",
-            animation: "fade",
+            animation: "ios",
           }}
         />
       ) : (
@@ -42,7 +42,7 @@ const RootLayout = () => {
           options={{
             headerShown: false,
             title: "Back",
-            animation: "fade",
+            animation: "ios",
           }}
         />
       )}
