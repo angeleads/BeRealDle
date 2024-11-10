@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Alert, SafeAreaView } from "react-native";
+import { View, Alert, Text, SafeAreaView } from "react-native";
+import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { db, auth } from "../../library/firebaseConfig";
 import GameBoard from "../../components/Wordle/GameBoard";
 import Keyboard from "../../components/Wordle/Keyboard";
 import { fetchRandomWord } from "../../utils/wordUtils";
@@ -15,10 +17,35 @@ export default function WordleGame() {
     Record<string, "correct" | "present" | "absent">
   >({});
   const [gameOver, setGameOver] = useState(false);
+  const [winCount, setWinCount] = useState(0);
 
   useEffect(() => {
     fetchWord();
   }, []);
+
+  const fetchWinCount = async () => {
+    if (auth.currentUser) {
+      const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+      if (userDoc.exists()) {
+        setWinCount(userDoc.data().wordleWins || 0);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchWord();
+    fetchWinCount();
+  }, []);
+
+  const updateWinCount = async () => {
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        wordleWins: increment(1)
+      });
+      setWinCount(prevCount => prevCount + 1);
+    }
+  };
 
   const fetchWord = async () => {
     const word = await fetchRandomWord();
@@ -73,7 +100,8 @@ export default function WordleGame() {
     setCurrentGuess("");
 
     if (currentGuess.toUpperCase() === targetWord) {
-      Alert.alert("Congratulations!", "You guessed the word!");
+      updateWinCount();
+      Alert.alert("Congratulations!", `You guessed the word! Total wins: ${winCount + 1} You can now post your BeReal!`);
       setGameOver(true);
     } else if (newGuesses.length === MAX_ATTEMPTS) {
       Alert.alert("Game Over", `The word was ${targetWord}`);
@@ -84,6 +112,9 @@ export default function WordleGame() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 justify-between p-4">
+        <View className="flex justify-center items-center">
+          <Text className="text-xl font-bold">Wins: {winCount}</Text>
+        </View>
         <GameBoard
           guesses={guesses}
           currentGuess={currentGuess}

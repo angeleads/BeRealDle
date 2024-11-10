@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { Timestamp, collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../library/firebaseConfig";
+import { Ionicons } from "@expo/vector-icons";
+import CommentSection from "./Comments"; 
 
 interface Post {
   id: string;
@@ -21,6 +23,7 @@ interface UserData {
 
 export default function Posts({ posts }: PostsProps) {
   const [userData, setUserData] = useState<{ [key: string]: UserData }>({});
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,6 +60,14 @@ export default function Posts({ posts }: PostsProps) {
     }
   };
 
+  const openComments = (post: Post) => {
+    setSelectedPost(post);
+  };
+
+  const closeComments = () => {
+    setSelectedPost(null);
+  };
+
   return (
     <ScrollView className="flex-1 p-4">
       {posts.map((post, index) => (
@@ -81,8 +92,23 @@ export default function Posts({ posts }: PostsProps) {
             source={{ uri: post.imageUrl }}
             className="w-full h-96 rounded-lg mb-5"
           />
+          <TouchableOpacity
+            onPress={() => openComments(post)}
+            className="absolute bottom-6 right-2 bg-black rounded-full p-2"
+          >
+            <Ionicons name="chatbubble" size={24} color="white" />
+          </TouchableOpacity>
         </View>
       ))}
+      <Modal
+        visible={selectedPost !== null}
+        animationType="slide"
+        onRequestClose={closeComments}
+      >
+        {selectedPost && (
+          <CommentSection post={selectedPost} onClose={closeComments} userData={userData} />
+        )}
+      </Modal>
     </ScrollView>
   );
 }

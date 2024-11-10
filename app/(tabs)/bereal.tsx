@@ -21,7 +21,18 @@ interface Post {
   imageUrl: string;
   createdAt: Timestamp | Date | { seconds: number; nanoseconds: number } | undefined;
   userId: string;
+  comments?: Comment[];
 }
+
+interface Post {
+  id: string;
+  imageUrl: string;
+  createdAt: Timestamp | Date | { seconds: number; nanoseconds: number } | undefined;
+  userId: string;
+  comments?: Comment[];
+}
+
+
 
 export default function BeReal() {
   const [showCamera, setShowCamera] = useState(false);

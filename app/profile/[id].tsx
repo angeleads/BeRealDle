@@ -16,6 +16,7 @@ export default function UserProfile() {
   const { id } = useLocalSearchParams();
   const [userData, setUserData] = useState<any>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [wins, setWins] = useState(0);
 
   useEffect(() => {
     fetchUserData();
@@ -27,6 +28,7 @@ export default function UserProfile() {
       const userDoc = await getDoc(doc(db, "users", id as string));
       if (userDoc.exists()) {
         setUserData(userDoc.data());
+        setWins(userDoc.data().wordleWins || 0);
       }
     }
   };
@@ -85,9 +87,10 @@ export default function UserProfile() {
       <View className="mt-16 px-6">
         <View className="bg-white rounded-xl shadow-md p-6 mb-4">
           <Text className="text-2xl font-bold mb-2">{userData.username}</Text>
-          <Text className="text-gray-600 mb-4">{userData.email}</Text>
+          <Text className="text-gray-600 mb-6">{userData.email}</Text>
           <View className="flex-row justify-between mb-6">
             <Text className="text-gray-600 text-lg font-bold"> {userData.followers?.length || 0} Followers</Text>
+            <Text className="text-gray-600 text-lg font-bold"> {wins} Wordle Wins</Text>
             <Text className="text-gray-600 text-lg font-bold"> {userData.following?.length || 0} Following</Text>
           </View>
           <TouchableOpacity

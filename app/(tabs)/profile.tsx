@@ -31,6 +31,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
+  const [wins, setWins] = useState(0);
 
   useEffect(() => {
     fetchUserData();
@@ -46,6 +47,7 @@ export default function Profile() {
         setProfilePicture(userData.profilePicture || "");
         setFollowers(userData.followers?.length || 0);
         setFollowing(userData.following?.length || 0);
+        setWins(userData.wordleWins || 0);
       }
     }
   };
@@ -179,9 +181,10 @@ export default function Profile() {
           ) : (
             <>
               <Text className="text-2xl font-bold mb-2">Hi {username}! 👋🏼</Text>
-              <Text className="text-gray-600 mb-2">{email}</Text>
+              <Text className="text-gray-600 mb-6">{email}</Text>
               <View className="flex-row justify-between mb-4">
                 <Text className="text-gray-600 text-lg font-bold">{followers} Followers</Text>
+                <Text className="text-gray-600 text-lg font-bold">{wins} Wordle Wins</Text>
                 <Text className="text-gray-600 text-lg font-bold">{following} Following</Text>
               </View>
               <TouchableOpacity
