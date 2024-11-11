@@ -173,9 +173,7 @@ export default function Profile() {
                 onPress={() => setIsEditing(false)}
                 className="bg-gray-300 py-3 rounded-xl"
               >
-                <Text className="text-black text-center font-bold">
-                  Cancel
-                </Text>
+                <Text className="text-black text-center font-bold">Cancel</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -183,9 +181,15 @@ export default function Profile() {
               <Text className="text-2xl font-bold mb-2">Hi {username}! 👋🏼</Text>
               <Text className="text-gray-600 mb-6">{email}</Text>
               <View className="flex-row justify-between mb-4">
-                <Text className="text-gray-600 text-lg font-bold">{followers} Followers</Text>
-                <Text className="text-gray-600 text-lg font-bold">{wins} Wordle Wins</Text>
-                <Text className="text-gray-600 text-lg font-bold">{following} Following</Text>
+                <Text className="text-gray-600 text-lg font-bold">
+                  {followers} Followers
+                </Text>
+                <Text className="text-gray-600 text-lg font-bold">
+                  {wins} Wordle Wins
+                </Text>
+                <Text className="text-gray-600 text-lg font-bold">
+                  {following} Following
+                </Text>
               </View>
               <TouchableOpacity
                 onPress={() => setIsEditing(true)}

@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal } from "react-native";
-import { Timestamp, collection, getDocs, doc, getDoc } from "firebase/firestore";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import {
+  Timestamp,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { db, auth } from "../../library/firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
-import CommentSection from "./Comments"; 
+import CommentSection from "./Comments";
 
 interface Post {
   id: string;
   imageUrl: string;
-  createdAt: Timestamp | Date | { seconds: number; nanoseconds: number } | undefined;
+  createdAt:
+    | Timestamp
+    | Date
+    | { seconds: number; nanoseconds: number }
+    | undefined;
   userId: string;
 }
 
@@ -27,7 +44,7 @@ export default function Posts({ posts }: PostsProps) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userIds = [...new Set(posts.map(post => post.userId))];
+      const userIds = [...new Set(posts.map((post) => post.userId))];
       const userDataMap: { [key: string]: UserData } = {};
 
       for (const userId of userIds) {
@@ -106,7 +123,11 @@ export default function Posts({ posts }: PostsProps) {
         onRequestClose={closeComments}
       >
         {selectedPost && (
-          <CommentSection post={selectedPost} onClose={closeComments} userData={userData} />
+          <CommentSection
+            post={selectedPost}
+            onClose={closeComments}
+            userData={userData}
+          />
         )}
       </Modal>
     </ScrollView>

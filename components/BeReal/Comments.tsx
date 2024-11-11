@@ -1,7 +1,24 @@
 // CommentSection.tsx
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
-import { Timestamp, collection, addDoc, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import {
+  Timestamp,
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
 import { db, auth } from "../../library/firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -28,7 +45,11 @@ interface CommentSectionProps {
   userData: { [key: string]: UserData };
 }
 
-export default function CommentSection({ post, onClose, userData }: CommentSectionProps) {
+export default function CommentSection({
+  post,
+  onClose,
+  userData,
+}: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
@@ -40,9 +61,9 @@ export default function CommentSection({ post, onClose, userData }: CommentSecti
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedComments = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
+      const fetchedComments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       })) as unknown as Comment[];
       setComments(fetchedComments);
     });
@@ -56,7 +77,7 @@ export default function CommentSection({ post, onClose, userData }: CommentSecti
         postId: post.id,
         userId: auth.currentUser.uid,
         text: newComment.trim(),
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
       });
       setNewComment("");
     }
@@ -68,21 +89,31 @@ export default function CommentSection({ post, onClose, userData }: CommentSecti
       style={{ flex: 1 }}
     >
       <View className="flex-1 bg-black">
-        <TouchableOpacity onPress={onClose} className="absolute top-12 left-4 z-10">
+        <TouchableOpacity
+          onPress={onClose}
+          className="absolute top-12 left-4 z-10"
+        >
           <Ionicons name="close" size={30} color="white" />
         </TouchableOpacity>
-        <Image source={{ uri: post.imageUrl }} className="w-full h-2/4 rounded-xl" />
+        <Image
+          source={{ uri: post.imageUrl }}
+          className="w-full h-2/4 rounded-xl"
+        />
         <ScrollView className="flex-1 p-6">
           {comments.map((comment) => (
             <View key={comment.id} className="flex-row mb-4">
               <Image
                 source={{
-                  uri: userData[comment.userId]?.profilePicture || "https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg",
+                  uri:
+                    userData[comment.userId]?.profilePicture ||
+                    "https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg",
                 }}
                 className="w-16 h-16 rounded-full mr-2"
               />
               <View className="flex-1 rounded-lg p-4">
-                <Text className="text-white font-bold text-lg">{userData[comment.userId]?.name || "Unknown User"}</Text>
+                <Text className="text-white font-bold text-lg">
+                  {userData[comment.userId]?.name || "Unknown User"}
+                </Text>
                 <Text className="text-white text-lg">{comment.text}</Text>
               </View>
             </View>

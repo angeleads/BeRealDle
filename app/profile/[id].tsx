@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { auth, db } from "../../library/firebaseConfig";
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function UserProfile() {
@@ -35,7 +35,9 @@ export default function UserProfile() {
 
   const checkIfFollowing = async () => {
     if (auth.currentUser && id) {
-      const currentUserDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+      const currentUserDoc = await getDoc(
+        doc(db, "users", auth.currentUser.uid)
+      );
       const currentUserData = currentUserDoc.data();
       setIsFollowing(currentUserData?.following?.includes(id));
     }
@@ -68,7 +70,11 @@ export default function UserProfile() {
   };
 
   if (!userData) {
-    return <View><Text>Loading...</Text></View>;
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -77,7 +83,9 @@ export default function UserProfile() {
         <View className="mt-24 items-center">
           <Image
             source={{
-              uri: userData.profilePicture || "https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg",
+              uri:
+                userData.profilePicture ||
+                "https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg",
             }}
             className="w-32 h-32 rounded-full border-4 border-white"
           />
@@ -89,16 +97,31 @@ export default function UserProfile() {
           <Text className="text-2xl font-bold mb-2">{userData.username}</Text>
           <Text className="text-gray-600 mb-6">{userData.email}</Text>
           <View className="flex-row justify-between mb-6">
-            <Text className="text-gray-600 text-lg font-bold"> {userData.followers?.length || 0} Followers</Text>
-            <Text className="text-gray-600 text-lg font-bold"> {wins} Wordle Wins</Text>
-            <Text className="text-gray-600 text-lg font-bold"> {userData.following?.length || 0} Following</Text>
+            <Text className="text-gray-600 text-lg font-bold">
+              {" "}
+              {userData.followers?.length || 0} Followers
+            </Text>
+            <Text className="text-gray-600 text-lg font-bold">
+              {" "}
+              {wins} Wordle Wins
+            </Text>
+            <Text className="text-gray-600 text-lg font-bold">
+              {" "}
+              {userData.following?.length || 0} Following
+            </Text>
           </View>
           <TouchableOpacity
             onPress={handleFollowUnfollow}
-            className={`py-3 rounded-xl ${isFollowing ? 'bg-gray-300' : 'bg-black'}`}
+            className={`py-3 rounded-xl ${
+              isFollowing ? "bg-gray-300" : "bg-black"
+            }`}
           >
-            <Text className={`text-center font-bold ${isFollowing ? 'text-black' : 'text-white'}`}>
-              {isFollowing ? 'Unfollow' : 'Follow'}
+            <Text
+              className={`text-center font-bold ${
+                isFollowing ? "text-black" : "text-white"
+              }`}
+            >
+              {isFollowing ? "Unfollow" : "Follow"}
             </Text>
           </TouchableOpacity>
         </View>
